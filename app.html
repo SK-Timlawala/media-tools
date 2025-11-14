@@ -7,23 +7,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         :root {
-            --primary-color: #6d28d9; 
-            --primary-light: #f5f3ff;
-            --secondary-color: #16a34a; 
+            /* NEW: "Cozy" Theme */
+            --primary-color: #2563eb; /* Friendly Blue */
+            --primary-light: #dbeafe;
+            --secondary-color: #16a34a;
             --error-color: #d93025;
-            --bg-color: #f3f4f6; 
+            --bg-color: #f8f9fa; /* Softer, warmer background */
             --card-bg-color: #ffffff;
-            --sidebar-bg: #111827;
-            --sidebar-text: #9ca3af;
-            --sidebar-text-hover: #ffffff;
-            --sidebar-active-bg: var(--primary-color);
-            --text-color: #111827;
+            --sidebar-bg: #ffffff; /* NEW: Light sidebar */
+            --sidebar-text: #4b5563; /* Dark text for light sidebar */
+            --sidebar-text-hover: var(--primary-color);
+            --sidebar-active-bg: var(--primary-light);
+            --sidebar-active-text: var(--primary-color);
+            --text-color: #1f2937;
             --label-color: #4b5563;
             --border-color: #e5e7eb;
-            --border-radius: 12px;
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --border-radius: 16px; /* NEW: Rounder corners */
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
         }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
@@ -34,16 +37,20 @@
             box-sizing: border-box;
             overflow: hidden;
         }
+
         .app-layout {
             display: grid;
             grid-template-columns: 260px 1fr;
             width: 100%;
             height: 100vh;
             overflow: hidden;
-            background: var(--card-bg-color);
+            background: var(--bg-color);
         }
+
+        /* --- Sidebar Navigation --- */
         .sidebar {
             background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
             padding: 24px;
             display: flex;
             flex-direction: column;
@@ -52,13 +59,13 @@
         .sidebar-header {
             font-size: 24px;
             font-weight: 700;
-            color: white;
+            color: var(--text-color);
             padding: 10px 12px;
             margin-bottom: 20px;
         }
         button.nav-link {
             width: 100%;
-            padding: 14px 12px;
+            padding: 14px 16px; /* More padding */
             border: none;
             background-color: transparent;
             font-size: 15px;
@@ -66,24 +73,28 @@
             color: var(--sidebar-text);
             cursor: pointer;
             transition: background-color 0.2s, color 0.2s;
-            border-radius: 8px;
+            border-radius: 12px; /* Rounder */
             text-align: left;
             margin-bottom: 8px;
         }
         button.nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: var(--primary-light);
             color: var(--sidebar-text-hover);
         }
         button.nav-link.active {
-            color: white;
+            color: var(--sidebar-active-text);
             background-color: var(--sidebar-active-bg);
+            font-weight: 700;
         }
+
+        /* --- Main Content Area --- */
         .main-content {
             padding: 30px 40px;
             overflow-y: auto;
         }
         .view { display: none; }
         .view.active { display: block; }
+
         h2 {
             font-size: 28px;
             font-weight: 700;
@@ -92,14 +103,14 @@
             margin-bottom: 25px;
         }
         h3 {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 600;
             color: var(--text-color);
-            margin-top: 30px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
+            margin-top: 0;
+            margin-bottom: 20px;
         }
+        
+        /* --- Guide View Styles --- */
         #guide-view p {
             font-size: 16px;
             line-height: 1.7;
@@ -109,7 +120,7 @@
         #guide-view .guide-section {
             margin-bottom: 30px;
             background: white;
-            padding: 20px;
+            padding: 24px;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-md);
         }
@@ -142,9 +153,33 @@
             content: '✗';
             color: var(--error-color);
         }
+        
+        /* --- NEW: Two-Column Layout for Tools --- */
+        .tool-layout-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+            gap: 30px;
+            align-items: flex-start;
+        }
+        .file-column {
+            /* This column will scroll if file list is long */
+            min-height: 200px;
+        }
+        .settings-column-sticky {
+            position: sticky;
+            top: 30px; /* Stick 30px from the top of the content area */
+        }
+        .settings-card {
+            background: var(--card-bg-color);
+            padding: 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+        }
+
         .form-group {
             margin-bottom: 24px;
         }
+        
         label {
             display: block;
             margin-bottom: 10px;
@@ -152,13 +187,14 @@
             color: var(--label-color);
             font-size: 14px;
         }
+
         input[type="number"],
         select {
             width: 100%;
-            padding: 12px 14px;
+            padding: 14px 16px; /* More padding */
             box-sizing: border-box;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 12px; /* Rounder */
             font-size: 16px;
             background-color: #fff;
             transition: border-color 0.2s, box-shadow 0.2s;
@@ -169,11 +205,14 @@
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px var(--primary-light);
         }
+        
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
+
+        /* --- Advanced Section --- */
         .advanced-section {
             border: none;
             padding: 0;
@@ -227,7 +266,7 @@
             align-items: center;
             background: #f3f4f6;
             border-left: 1px solid var(--border-color);
-            border-radius: 0 8px 8px 0;
+            border-radius: 0 12px 12px 0;
             font-size: 14px;
             font-weight: 500;
             color: var(--label-color);
@@ -253,6 +292,8 @@
             height: 16px;
             accent-color: var(--primary-color);
         }
+
+        /* --- File Upload Area --- */
         .file-drop-area {
             position: relative;
             display: flex;
@@ -260,16 +301,18 @@
             align-items: center;
             justify-content: center;
             padding: 30px;
-            border: 2px dashed var(--primary-color);
-            border-radius: 8px;
-            background-color: var(--primary-light);
-            color: var(--primary-color);
+            border: 2px dashed var(--border-color);
+            border-radius: var(--border-radius);
+            background-color: #fff;
+            color: var(--label-color);
             cursor: pointer;
-            transition: border-color 0.2s, background-color 0.2s;
+            transition: border-color 0.2s, background-color 0.2s, color 0.2s;
             margin-bottom: 15px;
         }
         .file-drop-area:hover {
-            background-color: #eef2ff;
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+            color: var(--primary-color);
         }
         .file-drop-area.is-dragging {
             background-color: #d1fae5;
@@ -288,12 +331,14 @@
             font-weight: 600;
             font-size: 16px;
         }
+        
+        /* --- File List Styling --- */
         .file-list-container {
-            max-height: 200px;
+            max-height: 400px; /* More height for the list */
             overflow-y: auto;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.5);
+            border-radius: var(--border-radius);
+            background: #fff;
         }
         .file-item {
             display: flex;
@@ -347,13 +392,15 @@
             background-color: var(--error-color);
             color: white;
         }
+
+        /* --- Buttons --- */
         button.submit-button {
             width: 100%;
             padding: 16px;
             background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
@@ -374,7 +421,7 @@
             background-color: var(--secondary-color);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
@@ -392,7 +439,7 @@
             background-color: #f1f3f5;
             color: var(--label-color);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
@@ -404,11 +451,16 @@
         a.clear-button:hover {
             background-color: #e5e7eb;
         }
+        
+        /* --- Loader --- */
         .loader-container {
             display: none;
             text-align: center;
             margin: 20px 0;
             padding: 40px;
+            background: var(--card-bg-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
         }
         .spinner {
             display: inline-block;
@@ -429,6 +481,8 @@
             font-size: 16px;
             color: var(--label-color);
         }
+        
+        /* --- Error Message --- */
         .error-message {
             display: none;
             padding: 15px;
@@ -440,6 +494,8 @@
             text-align: center;
             margin-top: 20px;
         }
+
+        /* --- Results Area --- */
         .results-area {
             display: none; 
             margin-top: 30px;
@@ -456,11 +512,13 @@
         .results-header a {
             flex-grow: 1;
         }
+        
+        /* --- File Stats (Optimizer Only) --- */
         .file-stats {
             margin-bottom: 25px;
             background-color: var(--primary-light);
             border: 1px solid #c7d2fe;
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 20px;
         }
         .stat-item {
@@ -484,6 +542,8 @@
         .stat-item.savings span:last-child {
             color: var(--secondary-color);
         }
+
+        /* --- Preview Gallery --- */
         .preview-gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -492,7 +552,7 @@
         }
         .preview-card {
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: var(--border-radius);
             background-color: #fff;
             box-shadow: var(--shadow-md);
             overflow: hidden;
@@ -560,7 +620,7 @@
             background-color: var(--primary-light);
             color: var(--primary-color);
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 14px;
             font-weight: 600;
             text-align: center;
@@ -570,6 +630,7 @@
         .download-single-btn:hover {
             background-color: #e0e7ff;
         }
+
 
         /* --- Mobile Responsive Styles --- */
         @media (max-width: 768px) {
@@ -621,6 +682,13 @@
             h2 {
                 font-size: 22px;
             }
+            /* NEW: Stack tool grid on mobile */
+            .tool-layout-grid {
+                grid-template-columns: 1fr;
+            }
+            .settings-column-sticky {
+                position: static; /* Disable sticky on mobile */
+            }
             .form-row,
             .advanced-grid {
                 grid-template-columns: 1fr;
@@ -657,94 +725,103 @@
         <main class="main-content">
             
             <div id="optimizer-view" class="view active">
-                <form id="opt-form">
-                    <h2>🚀 Image Optimizer</h2>
+                <h2>🚀 Image Optimizer</h2>
+                
+                <div class="tool-layout-grid">
                     
-                    <h3>1. Upload</h3>
-                    <div class="form-group">
-                        <div class="file-drop-area" id="opt-file-drop">
-                            <span class="file-drop-text">Drag & drop files or click to select</span>
-                            <input type="file" id="opt-file-input" accept="image/png,image/jpeg,image/webp,image/avif,image/tiff,image/gif" required multiple>
-                        </div>
-                        <div class="file-list-container" id="opt-file-list"></div>
+                    <div class="file-column">
+                        <h3>1. Upload</h3>
+                        <form id="opt-form-upload">
+                            <div class="form-group">
+                                <div class="file-drop-area" id="opt-file-drop">
+                                    <span class="file-drop-text">Drag & drop files or click to select</span>
+                                    <input type="file" id="opt-file-input" accept="image/png,image/jpeg,image/webp,image/avif,image/tiff,image/gif" required multiple>
+                                </div>
+                                <div class="file-list-container" id="opt-file-list"></div>
+                            </div>
+                        </form>
                     </div>
-
-                    <h3>2. Settings</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="opt-format">Format</label>
-                            <select id="opt-format" name="format">
-                                <option value="webp" selected>WebP (Best for Web)</option>
-                                <option value="avif">AVIF (Newest)</option>
-                                <option value="jpeg">JPEG (Photos)</option>
-                                <option value="png">PNG (Transparency)</option>
-                                <option value="tiff">TIFF (Max Quality)</option>
-                                <option value="gif">GIF (Animated)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="opt-quality">Quality</label>
-                            <input type="number" id="opt-quality" name="quality" value="80" min="1" max="100">
-                        </div>
-                    </div>
-
-                    <details class="advanced-section" id="opt-advanced">
-                        <summary>Advanced Resize & Edit</summary>
-                        <div class="advanced-grid">
-                            <div class="form-group">
-                                <label for="opt-fit">Fit Mode</label>
-                                <select id="opt-fit" name="fit">
-                                    <option value="inside" selected>Inside (Default)</option>
-                                    <option value="cover">Cover (Zoom)</option>
-                                    <option value="contain">Contain (Letterbox)</option>
-                                    <option value="fill">Fill (Stretch)</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="opt-rotate">Rotate (°)</label>
-                                <input type="number" id="opt-rotate" name="rotate" placeholder="e.g., 90" step="90">
-                            </div>
-                            <div class="form-group">
-                                <label for="opt-width">Width</label>
-                                <div class="input-group">
-                                    <input type="number" id="opt-width" name="width" value="1920">
-                                    <span class="input-group-text">px</span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="opt-height">Height</label>
-                                <div class="input-group">
-                                    <input type="number" id="opt-height" name="height" placeholder="Leave blank to auto-scale">
-                                    <span class="input-group-text">px</span>
-                                </div>
-                            </div>
-                            <div class="checkbox-group">
-                                <div class="checkbox-item">
-                                    <input type="checkbox" id="opt-grayscale" name="grayscale" value="true">
-                                    <label for="opt-grayscale">Grayscale</label>
-                                </div>
-                                <div class="checkbox-item">
-                                    <input type="checkbox" id="opt-flip" name="flip" value="true">
-                                    <label for="opt-flip">Flip (Horizontal)</label>
-                                </div>
-                                <div class="checkbox-item">
-                                    <input type="checkbox" id="opt-flop" name="flop" value="true">
-                                    <label for="opt-flop">Flop (Vertical)</label>
-                                </div>
-                            </div>
-                        </div>
-                    </details>
                     
-                    <button type="submit" id="opt-submit-button" class="submit-button">Optimize Images</button>
-                </form>
-
-                <div class="loader-container" id="opt-loader">
+                    <div class="settings-column">
+                        <div class="settings-column-sticky">
+                            <form id="opt-form-settings">
+                                <h3>2. Settings</h3>
+                                <div class="settings-card">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="opt-format">Format</label>
+                                            <select id="opt-format" name="format">
+                                                <option value="webp" selected>WebP (Best for Web)</option>
+                                                <option value="avif">AVIF (Newest)</option>
+                                                <option value="jpeg">JPEG (Photos)</option>
+                                                <option value="png">PNG (Transparency)</option>
+                                                <option value="tiff">TIFF (Max Quality)</option>
+                                                <option value="gif">GIF (Animated)</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="opt-quality">Quality</label>
+                                            <input type="number" id="opt-quality" name="quality" value="80" min="1" max="100">
+                                        </div>
+                                    </div>
+            
+                                    <details class="advanced-section" id="opt-advanced">
+                                        <summary>Advanced Resize & Edit</summary>
+                                        <div class="advanced-grid">
+                                            <div class="form-group">
+                                                <label for="opt-fit">Fit Mode</label>
+                                                <select id="opt-fit" name="fit">
+                                                    <option value="inside" selected>Inside (Default)</option>
+                                                    <option value="cover">Cover (Zoom)</option>
+                                                    <option value="contain">Contain (Letterbox)</option>
+                                                    <option value="fill">Fill (Stretch)</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="opt-rotate">Rotate (°)</label>
+                                                <input type="number" id="opt-rotate" name="rotate" placeholder="e.g., 90" step="90">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="opt-width">Width</label>
+                                                <div class="input-group">
+                                                    <input type="number" id="opt-width" name="width" value="1920">
+                                                    <span class="input-group-text">px</span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="opt-height">Height</label>
+                                                <div class="input-group">
+                                                    <input type="number" id="opt-height" name="height" placeholder="Leave blank to auto-scale">
+                                                    <span class="input-group-text">px</span>
+                                                </div>
+                                            </div>
+                                            <div class="checkbox-group">
+                                                <div class="checkbox-item">
+                                                    <input type="checkbox" id="opt-grayscale" name="grayscale" value="true">
+                                                    <label for="opt-grayscale">Grayscale</label>
+                                                </div>
+                                                <div class="checkbox-item">
+                                                    <input type="checkbox" id="opt-flip" name="flip" value="true">
+                                                    <label for="opt-flip">Flip (Horizontal)</label>
+                                                </div>
+                                                <div class="checkbox-item">
+                                                    <input type="checkbox" id="opt-flop" name="flop" value="true">
+                                                    <label for="opt-flop">Flop (Vertical)</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </details>
+                                </div>
+                                
+                                <button type="submit" id="opt-submit-button" class="submit-button">Optimize Images</button>
+                            </form>
+                        </div>
+                    </div>
+                </div> <div class="loader-container" id="opt-loader">
                     <div class="spinner"></div>
                     <div class="status-text" id="opt-status-text">Optimizing...</div>
                 </div>
-        
                 <div class="error-message" id="opt-error-message"></div>
-
                 <div class="results-area" id="opt-results-area">
                     <h2>Batch Optimization Complete!</h2>
                     <div class="file-stats" id="opt-file-stats">
@@ -910,7 +987,9 @@
             function renderFileList() {
                 revokePreviewUrls();
                 fileListContainer.innerHTML = '';
-                submitButton.disabled = fileArray.length === 0;
+                if(submitButton) { // Check if submit button exists (for reuse)
+                    submitButton.disabled = fileArray.length === 0;
+                }
 
                 if (fileArray.length === 0) {
                     fileListContainer.style.display = 'none';
@@ -992,12 +1071,13 @@
 
         // --- #1: Optimizer Logic (Batch Enabled) ---
         (function() {
+            // Split form into upload and settings
             const uploader = setupUploader(
                 'opt-file-input', 'opt-file-drop', 'opt-file-list', 
                 'opt-error-message', 'opt-submit-button', 
                 ['image/.*']
             );
-            const form = document.getElementById('opt-form');
+            const settingsForm = document.getElementById('opt-form-settings');
             const loader = document.getElementById('opt-loader');
             const statusText = document.getElementById('opt-status-text');
             const errorMsg = document.getElementById('opt-error-message');
@@ -1018,12 +1098,13 @@
                 errorMsg.textContent = message;
                 errorMsg.style.display = 'block';
                 loader.style.display = 'none';
-                form.style.display = 'block';
+                resultsArea.style.display = 'none'; // Hide results on new error
+                document.querySelector('.tool-layout-grid').style.display = 'grid'; // Show form
             }
             
             function clearResults() {
                 resultsArea.style.display = 'none';
-                form.style.display = 'block';
+                document.querySelector('.tool-layout-grid').style.display = 'grid'; // Show form
                 uploader.reset();
                 resultBlobs = [];
                 resultUrls.forEach(url => URL.revokeObjectURL(url));
@@ -1040,7 +1121,8 @@
                 clearResults();
             });
 
-            form.addEventListener('submit', async (e) => {
+            // Listen to the settings form's submit event
+            settingsForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const files = uploader.getFiles();
                 if (!files || files.length === 0) {
@@ -1049,7 +1131,7 @@
                 }
                 
                 clearResults();
-                form.style.display = 'none';
+                document.querySelector('.tool-layout-grid').style.display = 'none'; // Hide form
                 loader.style.display = 'block';
                 errorMsg.style.display = 'none';
                 
@@ -1058,7 +1140,7 @@
                 resultBlobs = [];
 
                 try {
-                    const formOptions = new FormData(form);
+                    const formOptions = new FormData(settingsForm);
                     
                     for (let i = 0; i < files.length; i++) {
                         const file = files[i];
@@ -1080,7 +1162,6 @@
                         if (!formOptions.has('flip')) formData.append('flip', 'false');
                         if (!formOptions.has('flop')) formData.append('flop', 'false');
 
-                        // *** NEW: Use relative URL ***
                         const response = await fetch('/optimize', {
                             method: 'POST',
                             body: formData,
@@ -1233,7 +1314,6 @@
                         const formData = new FormData();
                         formData.append('image', file);
 
-                        // *** NEW: Use relative URL ***
                         const response = await fetch('/remove-bg', {
                             method: 'POST',
                             body: formData,
